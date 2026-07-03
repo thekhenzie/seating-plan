@@ -115,8 +115,8 @@
       "id": "t_mr4oru7x",
       "name": "Family Khen",
       "seats": [
-        null,
-        null,
+        "g_mr4oru76",
+        "g_mr4oru77",
         null,
         null,
         null,
@@ -148,5 +148,5 @@
       "y": 87
     }
   ],
-  "zoom": 0.7
+  "zoom": 1.13
 }
