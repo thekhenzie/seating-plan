@@ -73,6 +73,9 @@
   }
   button.primary:hover { background: var(--accent-dark); color: #fff; }
   button.danger:hover { border-color: var(--danger); color: var(--danger); }
+  button#githubBtn.gh-synced { border-color: #7a9e7e; color: #4f7a54; }
+  button#githubBtn.gh-pending, button#githubBtn.gh-syncing { border-color: var(--accent); color: var(--accent-dark); }
+  button#githubBtn.gh-conflict, button#githubBtn.gh-error { border-color: var(--danger); color: var(--danger); }
 
   /* Main split */
   .main { display: flex; flex: 1; min-height: 0; }
@@ -333,6 +336,7 @@
       <button id="exportBtn">⭳ Export</button>
       <button id="importBtn">⭱ Import</button>
       <button id="resetBtn" class="danger">↺ Reset</button>
+      <button id="githubBtn" title="Sync this plan to GitHub so it's the same on every device">🔗 Connect GitHub</button>
       <input type="file" id="fileInput" class="hidden-file" accept="application/json,.json">
     </div>
   </header>
@@ -377,6 +381,14 @@
   var STORAGE_KEY = "weddingSeatingPlan.v1";
   var SEATS_PER_TABLE = 10;
 
+  // ---- GitHub sync config ----
+  var GH_OWNER = "thekhenzie";
+  var GH_REPO = "seating-plan";
+  var GH_PATH = "data/guestlist.json";
+  var GH_BRANCH = "main";
+  var GH_TOKEN_KEY = "weddingSeatingPlan.githubToken";
+  var GH_API = "https://api.github.com/repos/" + GH_OWNER + "/" + GH_REPO + "/contents/" + GH_PATH;
+
   var state = load() || { version: 1, guests: [], tables: [] };
 
   // ---- ID generation (no external deps) ----
@@ -385,6 +397,10 @@
 
   // ---- Persistence ----
   function save() {
+    persistLocal();
+    scheduleGithubSync();
+  }
+  function persistLocal() {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
     catch (e) { toast("Could not auto-save (storage blocked)."); }
   }
@@ -524,6 +540,182 @@
     };
     reader.readAsText(file);
   }
+
+  // ---- GitHub sync ----
+  var ghToken = null;
+  var ghSha = null;           // last-known sha of the remote file (for optimistic-concurrency updates)
+  var ghStatus = "off";       // off | pending | syncing | synced | conflict | error
+  var ghSyncTimer = null;
+  var ghBtn = document.getElementById("githubBtn");
+
+  function utf8ToBase64(str) {
+    var bytes = new TextEncoder().encode(str);
+    var binary = "";
+    bytes.forEach(function (b) { binary += String.fromCharCode(b); });
+    return btoa(binary);
+  }
+  function base64ToUtf8(b64) {
+    var binary = atob(b64.replace(/\s/g, ""));
+    var bytes = new Uint8Array(binary.length);
+    for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return new TextDecoder().decode(bytes);
+  }
+  function ghHeaders() {
+    return {
+      "Authorization": "Bearer " + ghToken,
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28"
+    };
+  }
+  function setGhStatus(s) {
+    ghStatus = s;
+    renderGhButton();
+  }
+  function renderGhButton() {
+    ghBtn.classList.remove("gh-synced", "gh-pending", "gh-syncing", "gh-conflict", "gh-error");
+    switch (ghStatus) {
+      case "off":
+        ghBtn.textContent = "🔗 Connect GitHub";
+        ghBtn.title = "Sync this plan to GitHub so it's the same on every device";
+        break;
+      case "pending":
+        ghBtn.textContent = "⏳ Sync pending…";
+        ghBtn.classList.add("gh-pending");
+        ghBtn.title = "Will push your changes to GitHub shortly";
+        break;
+      case "syncing":
+        ghBtn.textContent = "⟳ Syncing…";
+        ghBtn.classList.add("gh-syncing");
+        ghBtn.title = "Talking to GitHub…";
+        break;
+      case "synced":
+        ghBtn.textContent = "✓ Synced";
+        ghBtn.classList.add("gh-synced");
+        ghBtn.title = "Up to date with GitHub. Click to disconnect this device.";
+        break;
+      case "conflict":
+        ghBtn.textContent = "⚠ Reload needed";
+        ghBtn.classList.add("gh-conflict");
+        ghBtn.title = "Someone else updated the plan from another device. Click to reload this page.";
+        break;
+      case "error":
+        ghBtn.textContent = "⚠ Sync failed — retry";
+        ghBtn.classList.add("gh-error");
+        ghBtn.title = "Could not sync. Click to retry.";
+        break;
+    }
+  }
+
+  function scheduleGithubSync() {
+    if (!ghToken || ghStatus === "conflict") return;
+    clearTimeout(ghSyncTimer);
+    setGhStatus("pending");
+    ghSyncTimer = setTimeout(performGithubSync, 3000);
+  }
+
+  function performGithubSync() {
+    if (!ghToken) return;
+    setGhStatus("syncing");
+    var body = {
+      message: "Update guest list",
+      content: utf8ToBase64(JSON.stringify(state, null, 2)),
+      branch: GH_BRANCH
+    };
+    if (ghSha) body.sha = ghSha;
+    fetch(GH_API, { method: "PUT", headers: Object.assign({ "Content-Type": "application/json" }, ghHeaders()), body: JSON.stringify(body) })
+      .then(function (res) {
+        if (res.status === 409 || res.status === 422) {
+          setGhStatus("conflict");
+          toast("Someone updated this plan from another device. Reload to get the latest.");
+          return null;
+        }
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        return res.json();
+      })
+      .then(function (data) {
+        if (!data) return;
+        ghSha = data.content.sha;
+        setGhStatus("synced");
+      })
+      .catch(function () { setGhStatus("error"); });
+  }
+
+  // Fetch the remote file. Resolves { found:true, data, sha } / { found:false } / rejects on error.
+  function ghFetchRemote() {
+    return fetch(GH_API + "?ref=" + GH_BRANCH, { headers: ghHeaders() }).then(function (res) {
+      if (res.status === 404) return { found: false };
+      if (!res.ok) return Promise.reject(new Error("HTTP " + res.status));
+      return res.json().then(function (json) {
+        return { found: true, sha: json.sha, data: normalize(JSON.parse(base64ToUtf8(json.content))) };
+      });
+    });
+  }
+
+  function connectGithub() {
+    var token = prompt(
+      "Paste a GitHub fine-grained personal access token.\n\n" +
+      "Create one at github.com/settings/tokens with:\n" +
+      "• Repository access: only \"" + GH_OWNER + "/" + GH_REPO + "\"\n" +
+      "• Permissions: Contents → Read and write"
+    );
+    if (!token) return;
+    token = token.trim();
+    if (!token) return;
+
+    setGhStatus("syncing");
+    ghToken = token;
+    ghFetchRemote().then(function (remote) {
+      var hasLocalData = state.guests.length > 0 || state.tables.length > 0;
+      if (!remote.found) {
+        // No file on GitHub yet — this device's current plan becomes the starting point.
+        ghSha = null;
+        localStorage.setItem(GH_TOKEN_KEY, ghToken);
+        performGithubSync();
+        toast("Connected. This device's plan is now saved to GitHub.");
+        return;
+      }
+      if (hasLocalData) {
+        var same = JSON.stringify(remote.data.guests) === JSON.stringify(state.guests) &&
+                   JSON.stringify(remote.data.tables) === JSON.stringify(state.tables);
+        if (!same && !confirm("GitHub already has a saved plan for this wedding. Load it now? This will replace what's currently shown on this device.")) {
+          ghToken = null;
+          setGhStatus("off");
+          return;
+        }
+      }
+      state = remote.data;
+      ghSha = remote.sha;
+      if (!state.version) state.version = 1;
+      zoom = clampZoom(typeof state.zoom === "number" ? state.zoom : 1);
+      world.style.zoom = zoom; setZoomLabel();
+      localStorage.setItem(GH_TOKEN_KEY, ghToken);
+      persistLocal();
+      render();
+      setGhStatus("synced");
+      toast("Connected — loaded the latest plan from GitHub.");
+    }).catch(function () {
+      ghToken = null;
+      setGhStatus("off");
+      toast("Could not connect — check the token has Contents read/write access to " + GH_OWNER + "/" + GH_REPO + ".");
+    });
+  }
+
+  function disconnectGithub() {
+    if (!confirm("Disconnect this device from GitHub sync? Your plan stays as-is here, but will no longer sync.")) return;
+    ghToken = null;
+    ghSha = null;
+    clearTimeout(ghSyncTimer);
+    localStorage.removeItem(GH_TOKEN_KEY);
+    setGhStatus("off");
+    toast("Disconnected. This device will only save locally now.");
+  }
+
+  ghBtn.addEventListener("click", function () {
+    if (!ghToken) { connectGithub(); return; }
+    if (ghStatus === "conflict") { location.reload(); return; }
+    if (ghStatus === "error") { performGithubSync(); return; }
+    disconnectGithub();
+  });
 
   // ---- Rendering ----
   var pool = document.getElementById("pool");
@@ -909,6 +1101,25 @@
   world.style.zoom = zoom;
   setZoomLabel();
   render();
+
+  // If this device already has a saved token, silently pull the latest plan from GitHub.
+  var savedToken = localStorage.getItem(GH_TOKEN_KEY);
+  if (savedToken) {
+    ghToken = savedToken;
+    setGhStatus("syncing");
+    ghFetchRemote().then(function (remote) {
+      if (remote.found) {
+        state = remote.data;
+        ghSha = remote.sha;
+        if (!state.version) state.version = 1;
+        zoom = clampZoom(typeof state.zoom === "number" ? state.zoom : 1);
+        world.style.zoom = zoom; setZoomLabel();
+        persistLocal();
+        render();
+      }
+      setGhStatus("synced");
+    }).catch(function () { setGhStatus("error"); });
+  }
 })();
 </script>
 </body>
