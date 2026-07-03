@@ -146,6 +146,24 @@
       ],
       "x": 785,
       "y": 87
+    },
+    {
+      "id": "t_mr4pn6j3",
+      "name": "Table 3",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 162.33341640896265,
+      "y": 417.8331036037869
     }
   ],
   "zoom": 0.72
