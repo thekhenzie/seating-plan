@@ -212,10 +212,6 @@
     {
       "id": "g_mr5xrl65",
       "name": "Zane Joey Ayala"
-    },
-    {
-      "id": "g_mr5xrl66",
-      "name": "Baniqued Family"
     }
   ],
   "tables": [
@@ -306,8 +302,8 @@
         null,
         null
       ],
-      "x": 316.3203125,
-      "y": 826.4791666666666
+      "x": 440.0536295572917,
+      "y": 911.0656331380208
     },
     {
       "id": "t_mr5xrl5j",
@@ -380,6 +376,42 @@
       ],
       "x": 113.87506781684016,
       "y": 6.6292588975695
+    },
+    {
+      "id": "t_mr5xrl68",
+      "name": "Baniqued Family",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 354.79996744791663,
+      "y": 623.3599039713541
+    },
+    {
+      "id": "t_mr5xrl69",
+      "name": "Daniel Family",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 991.253662109375,
+      "y": 465.4395955403646
     }
   ],
   "zoom": 0.75
