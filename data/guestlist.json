@@ -354,10 +354,6 @@
       "name": "Raquel Gonzales"
     },
     {
-      "id": "g_mr6blnds",
-      "name": "Easter Gonzales"
-    },
-    {
       "id": "g_mr6blndt",
       "name": "Conchita Marzan"
     }
@@ -591,10 +587,10 @@
       "id": "t_mr6blndm",
       "name": "Gonzales Family",
       "seats": [
-        null,
-        null,
-        null,
-        null,
+        "g_mr6blndn",
+        "g_mr6blndo",
+        "g_mr6blndr",
+        "g_mr6blndt",
         null,
         null,
         null,
@@ -607,5 +603,5 @@
       "rotation": 0
     }
   ],
-  "zoom": 0.54
+  "zoom": 1.27
 }
