@@ -162,10 +162,6 @@
       "name": "Jan Christian Sarmiento"
     },
     {
-      "id": "g_mr5xrl5k",
-      "name": "Keng Ayala"
-    },
-    {
       "id": "g_mr5xrl5q",
       "name": "John Paul Cabrera"
     },
@@ -311,7 +307,7 @@
       "seats": [
         "g_mr4oru7l",
         "g_mr4oru7m",
-        "g_mr5xrl5k",
+        null,
         null,
         "g_mr5xrl5y",
         null,
