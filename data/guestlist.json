@@ -164,6 +164,30 @@
     {
       "id": "g_mr5xrl5k",
       "name": "Keng Ayala"
+    },
+    {
+      "id": "g_mr5xrl5q",
+      "name": "John Paul Cabrera"
+    },
+    {
+      "id": "g_mr5xrl5r",
+      "name": "Lart Ace Ignacio"
+    },
+    {
+      "id": "g_mr5xrl5s",
+      "name": "Renz Nebran"
+    },
+    {
+      "id": "g_mr5xrl5t",
+      "name": "Matt Mendez"
+    },
+    {
+      "id": "g_mr5xrl5u",
+      "name": "Duane De Guzman"
+    },
+    {
+      "id": "g_mr5xrl5v",
+      "name": "Emmanuel Magadia"
     }
   ],
   "tables": [
@@ -274,6 +298,24 @@
       ],
       "x": 237.37759060329861,
       "y": 148.35545857747397
+    },
+    {
+      "id": "t_mr5xrl5w",
+      "name": "Khen Friends",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 680,
+      "y": 350
     }
   ],
   "zoom": 0.9
