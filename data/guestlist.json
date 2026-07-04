@@ -534,7 +534,7 @@
       "name": "Daniel Family",
       "seats": [
         "g_mr6blnd1",
-        "g_mr6blnd2",
+        null,
         null,
         null,
         null,
@@ -552,7 +552,7 @@
       "id": "t_mr6blndl",
       "name": "Daniel Family 2",
       "seats": [
-        null,
+        "g_mr6blnd2",
         null,
         null,
         null,
