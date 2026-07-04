@@ -585,10 +585,10 @@
       "id": "t_mr5xrl60",
       "name": "Primary Sponsor Female",
       "seats": [
-        "g_mr6blneg",
+        "g_mr6b8dv5",
         "g_mr5xrl61",
         "g_mr6blnef",
-        "g_mr6b8dv5",
+        "g_mr6blneg",
         "g_mr6blncy",
         "g_mr6blnd0",
         null,
@@ -694,5 +694,5 @@
       "rotation": 0
     }
   ],
-  "zoom": 0.64
+  "zoom": 0.99
 }
