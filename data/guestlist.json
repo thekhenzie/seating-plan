@@ -238,10 +238,6 @@
       "name": "Gigi Mahinay"
     },
     {
-      "id": "g_mr5xrl6j",
-      "name": "Bernadeth Cañares"
-    },
-    {
       "id": "g_mr69pb24",
       "name": "Cherry Baitan"
     }
@@ -404,7 +400,7 @@
         "g_mr4oru7p",
         "g_mr5xrl61",
         "g_mr5xrl6i",
-        "g_mr5xrl6j",
+        null,
         null,
         null,
         null,
