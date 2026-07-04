@@ -566,6 +566,25 @@
       "x": 56.34631928943452,
       "y": 643.4797529740766,
       "rotation": 0
+    },
+    {
+      "id": "t_mr6blndm",
+      "name": "Gonzales Family",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 20,
+      "y": 1010,
+      "rotation": 0
     }
   ],
   "zoom": 0.54
