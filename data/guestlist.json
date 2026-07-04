@@ -200,6 +200,10 @@
     {
       "id": "g_mr5xrl61",
       "name": "Javerlyn Delos Reyes"
+    },
+    {
+      "id": "g_mr5xrl62",
+      "name": "Christian Delos Reyes"
     }
   ],
   "tables": [
@@ -334,7 +338,7 @@
       "name": "Nenongs",
       "seats": [
         "g_mr4oru7o",
-        null,
+        "g_mr5xrl62",
         null,
         null,
         null,
@@ -344,15 +348,15 @@
         null,
         null
       ],
-      "x": 1108.4891425238716,
-      "y": 590.9327189127604
+      "x": 930.7113647460938,
+      "y": 871.7326354980469
     },
     {
       "id": "t_mr5xrl60",
       "name": "Nenangs",
       "seats": [
         "g_mr4oru7p",
-        null,
+        "g_mr5xrl61",
         null,
         null,
         null,
@@ -362,8 +366,8 @@
         null,
         null
       ],
-      "x": 836.5776909722222,
-      "y": 568.4440104166667
+      "x": 633.1106906467013,
+      "y": 872.3546346028646
     }
   ],
   "zoom": 0.9
