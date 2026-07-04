@@ -239,7 +239,7 @@
       "id": "t_mr4pn6j3",
       "name": "BiniKols",
       "seats": [
-        "g_mr4oru7o",
+        null,
         "g_mr4oru7p",
         "g_mr4oru7q",
         "g_mr4oru7r",
@@ -250,8 +250,8 @@
         "g_mr4oru7w",
         null
       ],
-      "x": 1031.65291195824,
-      "y": 510.46795684021794
+      "x": 1201.253199501643,
+      "y": 466.11204728075614
     },
     {
       "id": "t_mr5xrl5a",
@@ -324,6 +324,24 @@
       ],
       "x": 245.82204182942712,
       "y": 504.3550279405382
+    },
+    {
+      "id": "t_mr5xrl5z",
+      "name": "Nenongs",
+      "seats": [
+        "g_mr4oru7o",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 914.8446316189236,
+      "y": 467.066413031684
     }
   ],
   "zoom": 0.9
