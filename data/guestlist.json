@@ -164,6 +164,24 @@
       ],
       "x": 342.14153229244164,
       "y": 550.2014366579263
+    },
+    {
+      "id": "t_mr5xrl52",
+      "name": "Primary Sponsor Male",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 1010,
+      "y": 20
     }
   ],
   "zoom": 0.45
