@@ -74,10 +74,6 @@
       "name": "Joseph Romano"
     },
     {
-      "id": "g_mr4oru7p",
-      "name": "Milet Romano"
-    },
-    {
       "id": "g_mr4oru7q",
       "name": "Israel Agudo"
     },
@@ -428,6 +424,10 @@
     {
       "id": "g_mr6blnef",
       "name": "Marianne Mahinay"
+    },
+    {
+      "id": "g_mr6blneg",
+      "name": "Somelyn Romano"
     }
   ],
   "tables": [
@@ -585,7 +585,7 @@
       "id": "t_mr5xrl60",
       "name": "Primary Sponsor Female",
       "seats": [
-        null,
+        "g_mr6blneg",
         "g_mr5xrl61",
         "g_mr6blnef",
         "g_mr6b8dv5",
