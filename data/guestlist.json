@@ -240,7 +240,7 @@
       "name": "BiniKols",
       "seats": [
         null,
-        "g_mr4oru7p",
+        null,
         "g_mr4oru7q",
         "g_mr4oru7r",
         "g_mr4oru7s",
@@ -250,8 +250,8 @@
         "g_mr4oru7w",
         null
       ],
-      "x": 1384.764484223865,
-      "y": 538.067342419645
+      "x": 1314.6755085294208,
+      "y": 463.3116864951658
     },
     {
       "id": "t_mr5xrl5a",
@@ -347,7 +347,7 @@
       "id": "t_mr5xrl60",
       "name": "Nenangs",
       "seats": [
-        null,
+        "g_mr4oru7p",
         null,
         null,
         null,
