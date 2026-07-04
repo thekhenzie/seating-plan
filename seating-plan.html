@@ -72,7 +72,6 @@
     border-color: var(--accent);
   }
   button.primary:hover { background: var(--accent-dark); color: #fff; }
-  button.danger:hover { border-color: var(--danger); color: var(--danger); }
   button#githubBtn.gh-synced { border-color: #7a9e7e; color: #4f7a54; }
   button#githubBtn.gh-pending, button#githubBtn.gh-syncing { border-color: var(--accent); color: var(--accent-dark); }
   button#githubBtn.gh-conflict, button#githubBtn.gh-error { border-color: var(--danger); color: var(--danger); }
@@ -192,6 +191,7 @@
     overflow: auto;
     padding: 26px;
     position: relative;
+    touch-action: none;
   }
   .world {
     position: relative;
@@ -199,6 +199,7 @@
     height: 1600px;
     zoom: 1;
     cursor: grab;
+    touch-action: none;
     background-image:
       linear-gradient(to right, rgba(140,107,79,.08) 1px, transparent 1px),
       linear-gradient(to bottom, rgba(140,107,79,.08) 1px, transparent 1px);
@@ -240,13 +241,36 @@
     touch-action: none;
   }
   .table.moving .surface { cursor: grabbing; box-shadow: 0 10px 28px rgba(80,60,40,.22); }
+  /* Counter-rotated so labels stay upright regardless of the table's own rotation. */
+  .table .tcontent { display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .table .tname {
     font-size: 15px; font-weight: 600; color: var(--ink);
     max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     cursor: text;
+    flex-shrink: 0;
   }
-  .table .tcount { font-size: 12px; color: var(--muted); margin-top: 3px; }
-  .table .tmenu { display: flex; gap: 6px; justify-content: center; margin-bottom: 7px; opacity: 0; pointer-events: none; transition: opacity .15s; }
+  /* Long single-row table (e.g. "Nenong", "Nenang", "Primary" tables) */
+  .table.long .surface { inset: 14px; border-radius: 16px; }
+  .table.long .tname { max-width: 280px; }
+  .table .rotate-handle {
+    position: absolute;
+    top: -7px; right: -7px;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--accent);
+    color: var(--accent-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    cursor: grab;
+    touch-action: none;
+    z-index: 8;
+    box-shadow: 0 1px 4px rgba(80,60,40,.3);
+  }
+  .table .rotate-handle:hover { background: var(--accent); color: #fff; }
+  .table .rotate-handle.rotating { cursor: grabbing; background: var(--accent-dark); color: #fff; }
+  .table .tcount { font-size: 12px; color: var(--muted); margin-top: 3px; flex-shrink: 0; }
+  .table .tmenu { display: flex; gap: 6px; justify-content: center; margin-bottom: 7px; opacity: 0; pointer-events: none; transition: opacity .15s; flex-shrink: 0; }
   .table:hover .tmenu { opacity: 1; pointer-events: auto; }
   .table .tmenu button { padding: 3px 10px; font-size: 12px; border-radius: 6px; background: #fff; }
 
@@ -335,7 +359,6 @@
       <button class="primary" id="addTableBtn">＋ Add table</button>
       <button id="exportBtn">⭳ Export</button>
       <button id="importBtn">⭱ Import</button>
-      <button id="resetBtn" class="danger">↺ Reset</button>
       <button id="githubBtn" title="Sync this plan to GitHub so it's the same on every device">🔗 Connect GitHub</button>
       <input type="file" id="fileInput" class="hidden-file" accept="application/json,.json">
     </div>
@@ -381,6 +404,11 @@
   var STORAGE_KEY = "weddingSeatingPlan.v1";
   var SEATS_PER_TABLE = 10;
 
+  // Tables for principal sponsors / grandparents get a long single-row layout instead of round.
+  // Declared here (not just where used below) because load() runs immediately and needs these.
+  var LONG_TABLE_KEYWORDS = ["nenong", "nenang", "primary"];
+  var LONG_TABLE_SEATS = 8;
+
   // ---- GitHub sync config ----
   var GH_OWNER = "thekhenzie";
   var GH_REPO = "seating-plan";
@@ -414,18 +442,31 @@
     } catch (e) { return null; }
   }
   function normalize(data) {
-    // Ensure each table has exactly SEATS_PER_TABLE seat slots and a canvas position.
+    // Ensure each table has the right number of seat slots for its shape, a canvas position, and a rotation.
     data.tables.forEach(function (t, i) {
       if (!Array.isArray(t.seats)) t.seats = [];
-      while (t.seats.length < SEATS_PER_TABLE) t.seats.push(null);
-      if (t.seats.length > SEATS_PER_TABLE) t.seats = t.seats.slice(0, SEATS_PER_TABLE);
+      resizeSeats(t);
       if (typeof t.x !== "number" || typeof t.y !== "number") { var p = gridPos(i); t.x = p.x; t.y = p.y; }
+      if (typeof t.rotation !== "number") t.rotation = 0;
     });
     return data;
   }
   // Default cascaded position for a table by index (used for legacy data and new tables).
   function gridPos(i) {
     return { x: 20 + (i % 4) * 330, y: 20 + Math.floor(i / 4) * 330 };
+  }
+
+  function isLongTable(name) {
+    var n = (name || "").toLowerCase();
+    return LONG_TABLE_KEYWORDS.some(function (kw) { return n.indexOf(kw) !== -1; });
+  }
+  function capacityFor(name) {
+    return isLongTable(name) ? LONG_TABLE_SEATS : SEATS_PER_TABLE;
+  }
+  function resizeSeats(table) {
+    var cap = capacityFor(table.name);
+    while (table.seats.length < cap) table.seats.push(null);
+    if (table.seats.length > cap) table.seats = table.seats.slice(0, cap);
   }
 
   // ---- Lookups ----
@@ -464,13 +505,24 @@
     if (name === null) return;
     name = name.trim() || ("Table " + (state.tables.length + 1));
     var p = gridPos(state.tables.length);
-    state.tables.push({ id: uid("t"), name: name, seats: new Array(SEATS_PER_TABLE).fill(null), x: p.x, y: p.y });
+    state.tables.push({ id: uid("t"), name: name, seats: new Array(capacityFor(name)).fill(null), x: p.x, y: p.y, rotation: 0 });
     save(); render();
   }
   function renameTable(table) {
     var name = prompt("Rename table:", table.name);
     if (name === null) return;
-    table.name = name.trim() || table.name;
+    name = name.trim() || table.name;
+
+    var newCap = capacityFor(name);
+    if (newCap < table.seats.length) {
+      var overflow = table.seats.slice(newCap).filter(Boolean).length;
+      if (overflow > 0 && !confirm(
+        'Renaming to "' + name + '" switches this to a single-row table with ' + newCap + ' seats. ' +
+        overflow + ' guest(s) in the extra seat(s) will return to the unseated pool. Continue?'
+      )) return;
+    }
+    table.name = name;
+    resizeSeats(table);
     save(); render();
   }
   function deleteTable(table) {
@@ -825,12 +877,54 @@
     });
   }
 
+  // Drag the small corner handle to freely rotate a long table around its own center.
+  // Live-updates the DOM directly while dragging (no re-render) for a smooth feel,
+  // then commits the final angle to state on release.
+  function enableTableRotate(wrap, handle, table) {
+    handle.addEventListener("pointerdown", function (e) {
+      if (e.button !== 0) return;
+      e.stopPropagation();
+      var textEls = wrap.querySelectorAll(".tcontent, .sname, .snum");
+      var startRotation = table.rotation || 0;
+      var rect = wrap.getBoundingClientRect();
+      var cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+      var startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI;
+      var liveRotation = startRotation;
+      handle.classList.add("rotating");
+      try { handle.setPointerCapture(e.pointerId); } catch (err) {}
+
+      function move(ev) {
+        var angle = Math.atan2(ev.clientY - cy, ev.clientX - cx) * 180 / Math.PI;
+        liveRotation = startRotation + (angle - startAngle);
+        wrap.style.transform = "rotate(" + liveRotation + "deg)";
+        textEls.forEach(function (el) { el.style.transform = "rotate(" + (-liveRotation) + "deg)"; });
+      }
+      function up() {
+        try { handle.releasePointerCapture(e.pointerId); } catch (err) {}
+        handle.removeEventListener("pointermove", move);
+        handle.removeEventListener("pointerup", up);
+        handle.classList.remove("rotating");
+        table.rotation = Math.round(((liveRotation % 360) + 360) % 360);
+        save(); render();
+      }
+      handle.addEventListener("pointermove", move);
+      handle.addEventListener("pointerup", up);
+    });
+  }
+
   function buildTable(table) {
-    var size = 240;
+    var long = isLongTable(table.name);
+    var cap = capacityFor(table.name);
+    var w = long ? 620 : 240;
+    var h = long ? 110 : 240;
+
     var wrap = document.createElement("div");
-    wrap.className = "table";
+    wrap.className = "table" + (long ? " long" : "");
     wrap.style.left = table.x + "px";
     wrap.style.top = table.y + "px";
+    wrap.style.width = w + "px";
+    wrap.style.height = h + "px";
+    if (table.rotation) wrap.style.transform = "rotate(" + table.rotation + "deg)";
 
     var count = table.seats.filter(Boolean).length;
 
@@ -848,7 +942,7 @@
     });
     var countEl = document.createElement("div");
     countEl.className = "tcount";
-    countEl.textContent = count + " / " + SEATS_PER_TABLE + " seats";
+    countEl.textContent = count + " / " + cap + " seats";
 
     // Rename/Delete row, centered inside the table above the name.
     var menu = document.createElement("div");
@@ -856,25 +950,47 @@
     var renameBtn = document.createElement("button");
     renameBtn.textContent = "Rename";
     renameBtn.addEventListener("click", function () { renameTable(table); });
+    menu.appendChild(renameBtn);
     var delBtn = document.createElement("button");
     delBtn.textContent = "Delete";
     delBtn.addEventListener("click", function () { deleteTable(table); });
-    menu.appendChild(renameBtn);
     menu.appendChild(delBtn);
 
-    surface.appendChild(menu);
-    surface.appendChild(nameEl);
-    surface.appendChild(countEl);
+    // Counter-rotate just the labels so they stay upright while the table shape itself rotates.
+    var content = document.createElement("div");
+    content.className = "tcontent";
+    if (table.rotation) content.style.transform = "rotate(" + (-table.rotation) + "deg)";
+    content.appendChild(menu);
+    content.appendChild(nameEl);
+    content.appendChild(countEl);
+    surface.appendChild(content);
     wrap.appendChild(surface);
 
-    // Position seats around the rim, sitting just outside the table surface.
-    var center = size / 2;
-    var radius = size / 2 + 4;
-    for (var i = 0; i < SEATS_PER_TABLE; i++) {
-      var angle = (Math.PI * 2 * i / SEATS_PER_TABLE) - Math.PI / 2; // start at top
-      var x = center + radius * Math.cos(angle);
-      var y = center + radius * Math.sin(angle);
-      wrap.appendChild(buildSeat(table, i, x, y));
+    if (long) {
+      var handle = document.createElement("div");
+      handle.className = "rotate-handle";
+      handle.textContent = "⟳";
+      handle.title = "Drag to rotate this table";
+      enableTableRotate(wrap, handle, table);
+      wrap.appendChild(handle);
+
+      // One row of seats along the top edge only.
+      var pad = 55;
+      var usable = w - pad * 2;
+      for (var i = 0; i < cap; i++) {
+        var x = cap > 1 ? pad + (usable / (cap - 1)) * i : w / 2;
+        wrap.appendChild(buildSeat(table, i, x, -6));
+      }
+    } else {
+      // Seats around the rim, sitting just outside the round table surface.
+      var center = w / 2;
+      var radius = w / 2 + 4;
+      for (var i = 0; i < cap; i++) {
+        var angle = (Math.PI * 2 * i / cap) - Math.PI / 2; // start at top
+        var x = center + radius * Math.cos(angle);
+        var y = center + radius * Math.sin(angle);
+        wrap.appendChild(buildSeat(table, i, x, y));
+      }
     }
     return wrap;
   }
@@ -887,6 +1003,7 @@
     seat.dataset.tableId = table.id;
     seat.dataset.seatIndex = index;
 
+    var counterRotate = table.rotation ? "rotate(" + (-table.rotation) + "deg)" : "";
     var guestId = table.seats[index];
     if (guestId) {
       var g = guestById(guestId);
@@ -896,6 +1013,7 @@
       var nameSpan = document.createElement("span");
       nameSpan.className = "sname";
       nameSpan.textContent = g ? g.name : "?";
+      nameSpan.style.transform = counterRotate;
       seat.appendChild(nameSpan);
       seat.title = g ? g.name : "";
 
@@ -909,7 +1027,11 @@
       seat.addEventListener("dragstart", function (e) { onDragStart(e, guestId, seat); });
       seat.addEventListener("dragend", function () { seat.classList.remove("dragging"); });
     } else {
-      seat.innerHTML = '<span class="snum">' + (index + 1) + '</span>';
+      var numSpan = document.createElement("span");
+      numSpan.className = "snum";
+      numSpan.textContent = index + 1;
+      numSpan.style.transform = counterRotate;
+      seat.appendChild(numSpan);
     }
 
     // Drop handling for every seat.
@@ -924,14 +1046,15 @@
       seat.classList.remove("dragover");
       if (!dragGuestId) return;
       var occupant = table.seats[index];
-      var isFull = table.seats.filter(Boolean).length >= SEATS_PER_TABLE;
+      var cap = capacityFor(table.name);
+      var isFull = table.seats.filter(Boolean).length >= cap;
       var alreadyHere = findSeatOf(dragGuestId);
       var movingWithinTable = alreadyHere && alreadyHere.table === table;
       // Reject only if table is full, the seat is empty, and the guest isn't already at this table.
       if (isFull && !occupant && !movingWithinTable) {
         seat.classList.add("reject");
         setTimeout(function () { seat.classList.remove("reject"); }, 300);
-        toast("That table is full (10/10).");
+        toast("That table is full (" + cap + "/" + cap + ").");
         return;
       }
       placeGuest(dragGuestId, table, index);
@@ -1055,9 +1178,34 @@
   }, { passive: false });
 
   // ---- Pan: drag empty canvas space to move around (like a map) ----
+  // Also handles two-finger pinch-to-zoom on touchscreens, scoped to the canvas only
+  // (touch-action:none on .canvas stops the browser from zooming the whole page instead).
   var panning = false, panX0 = 0, panY0 = 0, panSL = 0, panST = 0;
+  var activeTouches = {}; // pointerId -> {x,y}, tracked only for touch pointers
+  var pinch = null;       // {startDist, startZoom} while exactly 2 touches are down
+
+  function touchDist(ids) {
+    var a = activeTouches[ids[0]], b = activeTouches[ids[1]];
+    return Math.hypot(a.x - b.x, a.y - b.y);
+  }
+  function touchMid(ids) {
+    var a = activeTouches[ids[0]], b = activeTouches[ids[1]];
+    return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+  }
+
   canvas.addEventListener("pointerdown", function (e) {
+    if (e.pointerType === "touch") {
+      activeTouches[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(activeTouches);
+      if (ids.length === 2) {
+        endPan(e); // a second finger just landed: stop any single-finger pan first
+        pinch = { startDist: touchDist(ids), startZoom: zoom };
+        return;
+      }
+      if (ids.length > 2) return; // ignore a third+ finger
+    }
     if (e.button !== 0) return;
+    if (pinch) return; // mid-pinch: don't also start a pan
     if (e.target !== canvas && e.target !== world) return; // only start on empty background
     panning = true;
     panX0 = e.clientX; panY0 = e.clientY;
@@ -1066,6 +1214,15 @@
     try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
   });
   canvas.addEventListener("pointermove", function (e) {
+    if (e.pointerType === "touch" && activeTouches[e.pointerId]) {
+      activeTouches[e.pointerId] = { x: e.clientX, y: e.clientY };
+      var ids = Object.keys(activeTouches);
+      if (ids.length === 2 && pinch) {
+        var mid = touchMid(ids);
+        applyZoom(pinch.startZoom * (touchDist(ids) / pinch.startDist), mid.x, mid.y);
+        return;
+      }
+    }
     if (!panning) return;
     canvas.scrollLeft = panSL - (e.clientX - panX0);
     canvas.scrollTop = panST - (e.clientY - panY0);
@@ -1076,18 +1233,16 @@
     canvas.classList.remove("panning");
     try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
   }
-  canvas.addEventListener("pointerup", endPan);
-  canvas.addEventListener("pointercancel", endPan);
+  function endTouch(e) {
+    if (e.pointerType === "touch") {
+      delete activeTouches[e.pointerId];
+      if (Object.keys(activeTouches).length < 2) pinch = null;
+    }
+    endPan(e);
+  }
+  canvas.addEventListener("pointerup", endTouch);
+  canvas.addEventListener("pointercancel", endTouch);
   document.getElementById("addTableBtn").addEventListener("click", addTable);
-  document.getElementById("resetBtn").addEventListener("click", function () {
-    if (!state.guests.length && !state.tables.length) { toast("Already empty."); return; }
-    if (!confirm("Reset everything? This clears all guests and tables. Consider exporting a backup first.")) return;
-    if (!confirm("Are you sure? This can't be undone.")) return;
-    state = { version: 1, guests: [], tables: [], zoom: zoom };
-    canvasSearchInput.value = "";
-    save(); render();
-    toast("Plan reset.");
-  });
   document.getElementById("exportBtn").addEventListener("click", doExport);
   document.getElementById("importBtn").addEventListener("click", function () {
     document.getElementById("fileInput").click();
