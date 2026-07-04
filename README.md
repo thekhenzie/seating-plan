@@ -2,7 +2,7 @@
 
 An interactive drag-and-drop seating planner for our wedding — no install, no backend, just open it in a browser.
 
-**Live site: https://thekhenzie.github.io/seating-plan/
+**Live site:** https://thekhenzie.github.io/seating-plan/
 
 ## Features
 
