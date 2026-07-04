@@ -232,6 +232,10 @@
     {
       "id": "g_mr5xrl6f",
       "name": "Ronald John Baniqued"
+    },
+    {
+      "id": "g_mr5xrl6h",
+      "name": "Deth Degracia Cañares"
     }
   ],
   "tables": [
@@ -322,8 +326,8 @@
         null,
         null
       ],
-      "x": 440.0536295572917,
-      "y": 911.0656331380208
+      "x": 456.0536295572917,
+      "y": 857.3052164713541
     },
     {
       "id": "t_mr5xrl5j",
