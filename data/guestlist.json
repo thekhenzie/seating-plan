@@ -412,8 +412,8 @@
         "g_mr4oru7w",
         null
       ],
-      "x": 1609.590852767702,
-      "y": 555.7611751162979,
+      "x": 1611.2575194343685,
+      "y": 557.0944881045791,
       "rotation": 0
     },
     {
@@ -600,6 +600,25 @@
       ],
       "x": 956.1480147750289,
       "y": 577.8515681514034,
+      "rotation": 0
+    },
+    {
+      "id": "t_mr6blndu",
+      "name": "Gonzales Family 2",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 350,
+      "y": 1010,
       "rotation": 0
     }
   ],
