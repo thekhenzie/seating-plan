@@ -547,6 +547,25 @@
       "x": 134.0461256679517,
       "y": 637.719640690527,
       "rotation": 0
+    },
+    {
+      "id": "t_mr6blndl",
+      "name": "Daniel Family 2",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 692.0779379312094,
+      "y": 641.5061970500203,
+      "rotation": 0
     }
   ],
   "zoom": 0.77
