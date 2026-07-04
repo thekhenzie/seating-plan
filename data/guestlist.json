@@ -398,7 +398,7 @@
     },
     {
       "id": "t_mr5xrl5z",
-      "name": "Nenongs",
+      "name": "Primary Sponsor Male",
       "seats": [
         "g_mr4oru7o",
         "g_mr5xrl62",
@@ -409,13 +409,13 @@
         null,
         null
       ],
-      "x": 665.6985609266494,
-      "y": 50.66666666666667,
+      "x": 728.5334246819589,
+      "y": 15.559718851132693,
       "rotation": 0
     },
     {
       "id": "t_mr5xrl60",
-      "name": "Nenangs",
+      "name": "Primary Sponsor Female",
       "seats": [
         "g_mr4oru7p",
         "g_mr5xrl61",
@@ -426,8 +426,8 @@
         null,
         null
       ],
-      "x": 19.403889973958336,
-      "y": 44.570319281684085,
+      "x": 112.07943342464827,
+      "y": 38.64804636417191,
       "rotation": 0
     },
     {
@@ -469,5 +469,5 @@
       "rotation": 0
     }
   ],
-  "zoom": 1.03
+  "zoom": 0.77
 }
