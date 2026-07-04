@@ -356,7 +356,7 @@
         "g_mr5xrl6a",
         "g_mr5xrl6b",
         null,
-        null
+        "g_mr6blnd3"
       ],
       "x": 142.91373266354964,
       "y": 333.53231472439234,
@@ -533,8 +533,8 @@
       "id": "t_mr5xrl69",
       "name": "Daniel Family",
       "seats": [
-        null,
-        null,
+        "g_mr6blnd1",
+        "g_mr6blnd2",
         null,
         null,
         null,
@@ -544,8 +544,8 @@
         null,
         null
       ],
-      "x": 196.6435044854233,
-      "y": 653.044300161915,
+      "x": 134.0461256679517,
+      "y": 637.719640690527,
       "rotation": 0
     }
   ],
