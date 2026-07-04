@@ -244,6 +244,10 @@
     {
       "id": "g_mr6b8dv5",
       "name": "Deth Cañares"
+    },
+    {
+      "id": "g_mr6b8dv6",
+      "name": "Nato Cañares"
     }
   ],
   "tables": [
@@ -387,7 +391,7 @@
         "g_mr4oru7o",
         "g_mr5xrl62",
         "g_mr5xrl63",
-        null,
+        "g_mr6b8dv6",
         null,
         null,
         null,
