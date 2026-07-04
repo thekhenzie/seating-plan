@@ -192,6 +192,24 @@
       ],
       "x": 342.14153229244164,
       "y": 550.2014366579263
+    },
+    {
+      "id": "t_mr5xrl5a",
+      "name": "Sisteracas",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 597.5556098090278,
+      "y": 585.9548611111111
     }
   ],
   "zoom": 0.45
