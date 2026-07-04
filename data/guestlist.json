@@ -70,10 +70,6 @@
       "name": "Zensuwie Dylan Ayala"
     },
     {
-      "id": "g_mr4oru7n",
-      "name": "Keng"
-    },
-    {
       "id": "g_mr4oru7o",
       "name": "Joseph Romano"
     },
@@ -256,6 +252,24 @@
       ],
       "x": 20,
       "y": 350
+    },
+    {
+      "id": "t_mr5xrl5j",
+      "name": "Family Tine 2",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 237.37759060329861,
+      "y": 148.35545857747397
     }
   ],
   "zoom": 0.9
