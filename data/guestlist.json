@@ -234,10 +234,6 @@
       "name": "Ronald John Baniqued"
     },
     {
-      "id": "g_mr5xrl6i",
-      "name": "Gigi Mahinay"
-    },
-    {
       "id": "g_mr6b8dv5",
       "name": "Deth Cañares"
     },
@@ -587,7 +583,7 @@
       "seats": [
         "g_mr4oru7p",
         "g_mr5xrl61",
-        "g_mr5xrl6i",
+        null,
         "g_mr6b8dv5",
         "g_mr6blncy",
         "g_mr6blnd0",
