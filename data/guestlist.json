@@ -342,6 +342,24 @@
       ],
       "x": 914.8446316189236,
       "y": 467.066413031684
+    },
+    {
+      "id": "t_mr5xrl60",
+      "name": "Nenangs",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 20,
+      "y": 680
     }
   ],
   "zoom": 0.9
