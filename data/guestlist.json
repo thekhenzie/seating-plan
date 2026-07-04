@@ -356,6 +356,42 @@
     {
       "id": "g_mr6blndt",
       "name": "Conchita Marzan"
+    },
+    {
+      "id": "g_mr6blndv",
+      "name": "Vida Bianca Laus"
+    },
+    {
+      "id": "g_mr6blndw",
+      "name": "Ann Mica Mercader"
+    },
+    {
+      "id": "g_mr6blndx",
+      "name": "Roma Joyce Mercader"
+    },
+    {
+      "id": "g_mr6blndy",
+      "name": "Karie Gail Mercader"
+    },
+    {
+      "id": "g_mr6blndz",
+      "name": "Rei Joshua Catbagan"
+    },
+    {
+      "id": "g_mr6blne0",
+      "name": "Gio Paolo Catbagan"
+    },
+    {
+      "id": "g_mr6blne1",
+      "name": "Clara Betina Catbagan"
+    },
+    {
+      "id": "g_mr6blne2",
+      "name": "Heather Loui Ocinar"
+    },
+    {
+      "id": "g_mr6blne3",
+      "name": "Jean Luvern Ocinar"
     }
   ],
   "tables": [
@@ -606,15 +642,15 @@
       "id": "t_mr6blndu",
       "name": "Gonzales Family 2",
       "seats": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
+        "g_mr6blndv",
+        "g_mr6blndw",
+        "g_mr6blndx",
+        "g_mr6blndy",
+        "g_mr6blndz",
+        "g_mr6blne0",
+        "g_mr6blne1",
+        "g_mr6blne2",
+        "g_mr6blne3",
         null
       ],
       "x": 1297.4004109700522,
@@ -622,5 +658,5 @@
       "rotation": 0
     }
   ],
-  "zoom": 0.6
+  "zoom": 0.97
 }
