@@ -585,13 +585,13 @@
       "id": "t_mr5xrl60",
       "name": "Primary Sponsor Female",
       "seats": [
-        "g_mr6b8dv5",
+        null,
         "g_mr5xrl61",
         "g_mr6blnef",
         "g_mr6blneg",
         "g_mr6blncy",
         "g_mr6blnd0",
-        null,
+        "g_mr6b8dv5",
         null
       ],
       "x": 108.49484662472943,
