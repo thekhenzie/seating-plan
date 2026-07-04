@@ -238,6 +238,24 @@
       ],
       "x": 344.4000922309028,
       "y": 478.2213677300348
+    },
+    {
+      "id": "t_mr5xrl5i",
+      "name": "Bride Friends",
+      "seats": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "x": 20,
+      "y": 350
     }
   ],
   "zoom": 0.9
