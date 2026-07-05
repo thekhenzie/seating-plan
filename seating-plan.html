@@ -18,8 +18,12 @@
     --blue-deep: #26374a;
     --blue: #5c7994;
     --line: #dbe2e8;
-    --seat-empty: #eef1f3;
-    --seat-full: #dcc07f;
+    --seat-empty: #f1e9df;
+    --seat-full: #d8c3a5;
+    --seat-accent: #b08968;
+    --seat-accent-dark: #8c6b4f;
+    --table-ink: #3d3630;
+    --table-muted: #9a8f83;
     --on-accent: #26374a;
     --danger: #b5566a;
     --shadow: 0 4px 16px rgba(38,55,74,.08);
@@ -241,9 +245,9 @@
     position: absolute;
     inset: 34px;
     border-radius: 50%;
-    background: radial-gradient(circle at 40% 35%, #fffefc, var(--seat-empty));
+    background: radial-gradient(circle at 40% 35%, #fffdfb, #efe4d5);
     border: 2px solid var(--seat-full);
-    box-shadow: var(--shadow), inset 0 0 24px rgba(38,55,74,.08);
+    box-shadow: var(--shadow), inset 0 0 24px rgba(140,107,79,.08);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -253,11 +257,11 @@
     cursor: grab;
     touch-action: none;
   }
-  .table.moving .surface { cursor: grabbing; box-shadow: 0 10px 28px rgba(38,55,74,.22); }
+  .table.moving .surface { cursor: grabbing; box-shadow: 0 10px 28px rgba(80,60,40,.22); }
   /* Counter-rotated so labels stay upright regardless of the table's own rotation. */
   .table .tcontent { display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .table .tname {
-    font-size: 15px; font-weight: 600; color: var(--ink);
+    font-size: 15px; font-weight: 600; color: var(--table-ink);
     max-width: 130px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
     cursor: text;
     flex-shrink: 0;
@@ -271,22 +275,22 @@
     width: 26px; height: 26px;
     border-radius: 50%;
     background: #fff;
-    border: 2px solid var(--accent);
-    color: var(--accent-dark);
+    border: 2px solid var(--seat-accent);
+    color: var(--seat-accent-dark);
     display: flex; align-items: center; justify-content: center;
     font-size: 14px;
     cursor: grab;
     touch-action: none;
     z-index: 8;
-    box-shadow: 0 1px 4px rgba(38,55,74,.3);
+    box-shadow: 0 1px 4px rgba(80,60,40,.3);
     opacity: 0;
     pointer-events: none;
     transition: opacity .15s;
   }
   .table:hover .rotate-handle, .table .rotate-handle.rotating { opacity: 1; pointer-events: auto; }
-  .table .rotate-handle:hover { background: var(--accent); color: var(--on-accent); }
-  .table .rotate-handle.rotating { cursor: grabbing; background: var(--accent-dark); color: var(--on-accent); }
-  .table .tcount { font-size: 12px; color: var(--muted); margin-top: 3px; flex-shrink: 0; }
+  .table .rotate-handle:hover { background: var(--seat-accent); color: #fff; }
+  .table .rotate-handle.rotating { cursor: grabbing; background: var(--seat-accent-dark); color: #fff; }
+  .table .tcount { font-size: 12px; color: var(--table-muted); margin-top: 3px; flex-shrink: 0; }
   .table .tmenu { display: flex; gap: 6px; justify-content: center; margin-bottom: 7px; opacity: 0; pointer-events: none; transition: opacity .15s; flex-shrink: 0; }
   .table:hover .tmenu { opacity: 1; pointer-events: auto; }
   .table .tmenu button { padding: 3px 10px; font-size: 12px; border-radius: 6px; background: #fff; }
@@ -298,16 +302,16 @@
     margin: -29px 0 0 -29px;
     border-radius: 50%;
     background: var(--seat-empty);
-    border: 2px dashed #c3ccd3;
+    border: 2px dashed #d9cdbd;
     display: flex; align-items: center; justify-content: center;
     font-size: 13px; text-align: center; line-height: 1.05;
     padding: 3px;
     transition: background .12s, border-color .12s, transform .08s, box-shadow .12s;
   }
   .seat.occupied {
-    background: var(--accent);
-    border: 2px solid var(--accent-dark);
-    color: var(--on-accent);
+    background: var(--seat-accent);
+    border: 2px solid var(--seat-accent-dark);
+    color: #fff;
     cursor: grab;
     font-size: 11px;
   }
@@ -316,8 +320,8 @@
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
     overflow: hidden; max-width: 100%; word-break: break-word;
   }
-  .seat .snum { color: var(--muted); }
-  .seat.dragover { border-color: var(--accent); background: #f2e4bf; transform: scale(1.12); }
+  .seat .snum { color: var(--table-muted); }
+  .seat.dragover { border-color: var(--seat-accent); background: #efe0cd; transform: scale(1.12); }
   .seat.reject { animation: shake .3s; border-color: var(--danger); }
   .seat.occupied.dragging { opacity: .4; }
   .seat .sdel {
